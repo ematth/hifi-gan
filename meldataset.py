@@ -45,7 +45,7 @@ def spectral_de_normalize_torch(magnitudes):
 mel_basis = {}
 hann_window = {}
 
-
+@staticmethod
 def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin, fmax, center=False):
     if torch.min(y) < -1.:
         print('min value is ', torch.min(y))
@@ -71,14 +71,25 @@ def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin,
 
     return spec
 
+# ORIGINAL
+# def get_dataset_filelist(a):
+#     with open(a.input_training_file, 'r', encoding='utf-8') as fi:
+#         training_files = [os.path.join(a.input_wavs_dir, x.split('|')[0] + '.wav')
+#                           for x in fi.read().split('\n') if len(x) > 0]
 
+#     with open(a.input_validation_file, 'r', encoding='utf-8') as fi:
+#         validation_files = [os.path.join(a.input_wavs_dir, x.split('|')[0] + '.wav')
+#                             for x in fi.read().split('\n') if len(x) > 0]
+#     return training_files, validation_files
+
+@staticmethod
 def get_dataset_filelist(a):
     with open(a.input_training_file, 'r', encoding='utf-8') as fi:
-        training_files = [os.path.join(a.input_wavs_dir, x.split('|')[0] + '.wav')
+        training_files = [os.path.join(a.input_wavs_dir, x.split(',')[0] + '.wav')
                           for x in fi.read().split('\n') if len(x) > 0]
 
     with open(a.input_validation_file, 'r', encoding='utf-8') as fi:
-        validation_files = [os.path.join(a.input_wavs_dir, x.split('|')[0] + '.wav')
+        validation_files = [os.path.join(a.input_wavs_dir, x.split(',')[0] + '.wav')
                             for x in fi.read().split('\n') if len(x) > 0]
     return training_files, validation_files
 
