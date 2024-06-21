@@ -9,6 +9,7 @@ from scipy.io.wavfile import write
 from env import AttrDict
 from meldataset import mel_spectrogram, MAX_WAV_VALUE, load_wav
 from models import Generator
+import numpy as np
 
 h = None
 device = None
@@ -53,9 +54,17 @@ def inference(a):
             wav = torch.FloatTensor(wav).to(device)
             x = get_mel(wav.unsqueeze(0))
             y_g_hat = generator(x)
+
             audio = y_g_hat.squeeze()
             audio = audio * MAX_WAV_VALUE
-            audio = audio.cpu().numpy().astype('int16')
+            audio = audio.cpu().numpy().astype(np.int16)
+            print(audio.shape)
+            np.savetxt('output.csv', audio, delimiter=',')
+            
+            #audio = audio.cpu().numpy().astype('int16')
+            # print('===========')
+            # print(np.savetxt('output.txt', audio.astype('int16')))
+            # print('===========')
 
             output_file = os.path.join(a.output_dir, os.path.splitext(filname)[0] + '_generated.wav')
             write(output_file, h.sampling_rate, audio)
