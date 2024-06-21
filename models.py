@@ -4,6 +4,7 @@ import torch.nn as nn
 from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
 from torch.nn.utils.parametrizations import weight_norm
 from torch.nn.utils import remove_weight_norm, spectral_norm
+from torch.nn.utils.parametrize import remove_parametrizations
 from utils import init_weights, get_padding
 
 LRELU_SLOPE = 0.1
@@ -44,9 +45,11 @@ class ResBlock1(torch.nn.Module):
 
     def remove_weight_norm(self):
         for l in self.convs1:
-            remove_weight_norm(l)
+            #remove_weight_norm(l)
+            remove_parametrizations(l, 'weight')
         for l in self.convs2:
-            remove_weight_norm(l)
+            #remove_weight_norm(l)
+            remove_parametrizations(l, 'weight')
 
 
 class ResBlock2(torch.nn.Module):
@@ -70,7 +73,8 @@ class ResBlock2(torch.nn.Module):
 
     def remove_weight_norm(self):
         for l in self.convs:
-            remove_weight_norm(l)
+            #remove_weight_norm(l)
+            remove_parametrizations(l, 'weight')
 
 
 class Generator(torch.nn.Module):
@@ -119,11 +123,14 @@ class Generator(torch.nn.Module):
     def remove_weight_norm(self):
         print('Removing weight norm...')
         for l in self.ups:
-            remove_weight_norm(l)
+            #remove_weight_norm(l)
+            remove_parametrizations(l, 'weight')
         for l in self.resblocks:
             l.remove_weight_norm()
-        remove_weight_norm(self.conv_pre)
-        remove_weight_norm(self.conv_post)
+        # remove_weight_norm(self.conv_pre)
+        # remove_weight_norm(self.conv_post)
+        remove_parametrizations(self.conv_pre, 'weight')
+        remove_parametrizations(self.conv_post, 'weight')
 
 
 class DiscriminatorP(torch.nn.Module):
