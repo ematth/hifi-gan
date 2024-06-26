@@ -75,7 +75,7 @@ def train(rank, a, h):
 
     trainset = MelDataset(training_filelist, h.segment_size, h.n_fft, h.num_mels,
                           h.hop_size, h.win_size, h.sampling_rate, h.fmin, h.fmax, n_cache_reuse=0,
-                          shuffle=False if h.num_gpus > 1 else True, fmax_loss=h.fmax_for_loss, device=device,
+                          shuffle=False, fmax_loss=h.fmax_for_loss, device=device, # shuffle=False if h.num_gpus > 1 else True,
                           fine_tuning=a.fine_tuning, base_mels_path=a.input_mels_dir)
 
     train_sampler = DistributedSampler(trainset) if h.num_gpus > 1 else None
@@ -230,12 +230,21 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--group_name', default=None)
-    parser.add_argument('--input_wavs_dir', default='../../../../mnt/data/musicnet/train_data')
+    # MUSICNET
+    # parser.add_argument('--input_wavs_dir', default='../../../../mnt/data/musicnet/train_data')
+    # parser.add_argument('--input_mels_dir', default='ft_dataset')
+    # parser.add_argument('--input_training_file', default='../../../../mnt/data/musicnet/metadata_train.csv')
+    # parser.add_argument('--input_validation_file', default='../../../../mnt/data/musicnet/metadata_test.csv')
+
+    # MAESTRO
+    parser.add_argument('--input_wavs_dir', default='../../../../mnt/data/maestro-v3.0.0')
     parser.add_argument('--input_mels_dir', default='ft_dataset')
-    parser.add_argument('--input_training_file', default='../../../../mnt/data/musicnet/metadata_train.csv')
-    parser.add_argument('--input_validation_file', default='../../../../mnt/data/musicnet/metadata_test.csv')
+    parser.add_argument('--input_training_file', default='../../../../mnt/data/maestro-v3.0.0/maestro-v3.0.0-train.csv')
+    parser.add_argument('--input_validation_file', default='../data_prep/maestro-v3.0.0-validation.csv') # empty CSV
+    # parser.add_argument('--input_validation_file', default='../../../../mnt/data/maestro-v3.0.0/maestro-v3.0.0-validation.csv')
+
     parser.add_argument('--checkpoint_path', default='cp_hifigan')
-    parser.add_argument('--config', default='config_v1.json')
+    parser.add_argument('--config', default='config_v3.json')
     parser.add_argument('--training_epochs', default=100, type=int)
     parser.add_argument('--stdout_interval', default=5, type=int)
     parser.add_argument('--checkpoint_interval', default=100, type=int)

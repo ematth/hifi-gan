@@ -58,7 +58,7 @@ def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin,
         mel_basis[str(fmax)+'_'+str(y.device)] = torch.from_numpy(mel).float().to(y.device)
         hann_window[str(y.device)] = torch.hann_window(win_size).to(y.device)
 
-    # y = y.reshape((y.shape[2], y.shape[1]))
+    #print(f'y shape -> {y.shape}')
     y = torch.nn.functional.pad(y, (int((n_fft-hop_size)/2), int((n_fft-hop_size)/2)), mode='reflect')
 
     spec = torch.view_as_real(torch.stft(y, n_fft, hop_length=hop_size, win_length=win_size, window=hann_window[str(y.device)],
@@ -138,6 +138,15 @@ class MelDataset(torch.utils.data.Dataset):
 
         audio = torch.FloatTensor(audio)
         audio = audio.unsqueeze(0)
+
+        #print(f'audio shape -> {audio.shape}')
+
+        # FIX FOR STEREO AUDIO IN MAESTRO:
+        if len(audio.shape) > 2:
+            audio = torch.mean(audio, dim=2, keepdim=False)
+
+        #print(f'2audio shape -> {audio.shape}')
+        print(filename)
 
         if not self.fine_tuning:
             if self.split:
