@@ -137,16 +137,12 @@ class MelDataset(torch.utils.data.Dataset):
             self._cache_ref_count -= 1
 
         audio = torch.FloatTensor(audio)
-        audio = audio.unsqueeze(0)
+        #audio = audio.unsqueeze(0)
+        audio = audio.mT
+        audio = torch.mean(audio, dim=0, keepdim=True)
 
-        #print(f'audio shape -> {audio.shape}')
-
-        # FIX FOR STEREO AUDIO IN MAESTRO:
-        if len(audio.shape) > 2:
-            audio = torch.mean(audio, dim=2, keepdim=False)
-
-        #print(f'2audio shape -> {audio.shape}')
         print(filename)
+        print(f'audio shape -> {audio.shape}')
 
         if not self.fine_tuning:
             if self.split:
