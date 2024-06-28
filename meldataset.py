@@ -105,7 +105,6 @@ class MelDataset(torch.utils.data.Dataset):
         self.segment_size = segment_size
         self.sampling_rate = sampling_rate
         self.split = split
-        print(f'this bool is {split}, {self.split}')
         self.n_fft = n_fft
         self.num_mels = num_mels
         self.hop_size = hop_size
@@ -122,7 +121,7 @@ class MelDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         filename = self.audio_files[index]
-        print(f'getting FILENAME -> {filename}')
+        #print(f'getting FILENAME -> {filename}')
         if self._cache_ref_count == 0:
             audio, sampling_rate = load_wav(filename)
             audio = audio / MAX_WAV_VALUE
@@ -147,12 +146,12 @@ class MelDataset(torch.utils.data.Dataset):
         if not self.fine_tuning: #self.fine_tuning: Turn off fine_tuning completely.
             if self.split: #self.split: This switches to False after first item?!
                 if audio.size(1) >= self.segment_size:
-                    print(f'{audio.shape} >= {self.segment_size}')
+                    #print(f'{audio.shape} >= {self.segment_size}')
                     max_audio_start = audio.size(1) - self.segment_size
                     audio_start = random.randint(0, max_audio_start)
                     audio = audio[:, audio_start:audio_start+self.segment_size]
                 else:
-                    print(f'{audio.shape}')
+                    #print(f'{audio.shape}')
                     audio = torch.nn.functional.pad(audio, (0, self.segment_size - audio.size(1)), 'constant')
 
             #print(f'final audio shape -> {audio.shape}')

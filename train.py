@@ -73,7 +73,6 @@ def train(rank, a, h):
 
     training_filelist, validation_filelist = get_dataset_filelist(a)
 
-    print('train')
     trainset = MelDataset(training_filelist, h.segment_size, h.n_fft, h.num_mels,
                           h.hop_size, h.win_size, h.sampling_rate, h.fmin, h.fmax, n_cache_reuse=0,
                           shuffle=False, fmax_loss=h.fmax_for_loss, device=device, # shuffle=False if h.num_gpus > 1 else True,
@@ -87,7 +86,6 @@ def train(rank, a, h):
                               pin_memory=True,
                               drop_last=True)
 
-    print('valid')
     if rank == 0:
         validset = MelDataset(validation_filelist, h.segment_size, h.n_fft, h.num_mels,
                               h.hop_size, h.win_size, h.sampling_rate, h.fmin, h.fmax, split=True, shuffle=False, n_cache_reuse=0,
