@@ -226,6 +226,7 @@ def train(rank, a, h):
 
 def main():
     print('Initializing Training Process..')
+    print(f'nccl: {torch.distributed.is_nccl_available()}')
 
     parser = argparse.ArgumentParser()
 
@@ -240,8 +241,8 @@ def main():
     parser.add_argument('--input_wavs_dir', default='../../../../mnt/data/maestro-v3.0.0')
     parser.add_argument('--input_mels_dir', default='ft_dataset')
     parser.add_argument('--input_training_file', default='../../../../mnt/data/maestro-v3.0.0/maestro-v3.0.0-train.csv')
-    #parser.add_argument('--input_validation_file', default='../data_prep/maestro-v3.0.0-validation.csv') # empty CSV
     parser.add_argument('--input_validation_file', default='../../../../mnt/data/maestro-v3.0.0/maestro-v3.0.0-validation.csv')
+    #parser.add_argument('--input_validation_file', default='../data_prep/maestro-v3.0.0-validation.csv') # empty CSV
 
     parser.add_argument('--checkpoint_path', default='cp_hifigan')
     parser.add_argument('--config', default='config_v3.json')
@@ -264,7 +265,7 @@ def main():
     torch.manual_seed(h.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(h.seed)
-        h.num_gpus = 2 #torch.cuda.device_count()
+        h.num_gpus = 1 #torch.cuda.device_count()
         h.batch_size = h.batch_size // h.num_gpus
         print(f'Number of GPUs: {h.num_gpus}')
         print(f'Batch size per GPU : {h.batch_size}')
