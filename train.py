@@ -245,9 +245,9 @@ def main():
 
     parser.add_argument('--checkpoint_path', default='cp_hifigan')
     parser.add_argument('--config', default='config_v3.json')
-    parser.add_argument('--training_epochs', default=100, type=int)
+    parser.add_argument('--training_epochs', default=5000, type=int)
     parser.add_argument('--stdout_interval', default=5, type=int)
-    parser.add_argument('--checkpoint_interval', default=100, type=int)
+    parser.add_argument('--checkpoint_interval', default=1000, type=int)
     parser.add_argument('--summary_interval', default=100, type=int)
     parser.add_argument('--validation_interval', default=1000, type=int)
     parser.add_argument('--fine_tuning', default=False, type=bool)
@@ -264,9 +264,10 @@ def main():
     torch.manual_seed(h.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(h.seed)
-        h.num_gpus = 1 #torch.cuda.device_count()
-        h.batch_size = 1 #int(h.batch_size / h.num_gpus)
-        print('Batch size per GPU :', h.batch_size)
+        h.num_gpus = 2 #torch.cuda.device_count()
+        h.batch_size = h.batch_size // h.num_gpus
+        print(f'Number of GPUs: {h.num_gpus}')
+        print(f'Batch size per GPU : {h.batch_size}')
     else:
         pass
 

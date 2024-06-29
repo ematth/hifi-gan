@@ -1,4 +1,0 @@
-../../../../mnt/data/maestro-v3.0.0/2004/MIDI-Unprocessed_XP_06_R1_2004_01_ORIG_MID--AUDIO_06_R1_2004_01_Track01_wav.wav
-../../../../mnt/data/maestro-v3.0.0/2014/MIDI-UNPROCESSED_09-10_R1_2014_MID--AUDIO_10_R1_2014_wav--3.wav
-../../../../mnt/data/maestro-v3.0.0/2015/MIDI-Unprocessed_R1_D2-13-20_mid--AUDIO-from_mp3_19_R1_2015_wav--2.wav
-../../../../mnt/data/maestro-v3.0.0/2004/MIDI-Unprocessed_SMF_17_R1_2004_01-02_ORIG_MID--AUDIO_20_R2_2004_06_Track06_wav.wav
