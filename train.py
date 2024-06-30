@@ -27,6 +27,7 @@ def train(rank, a, h):
                            world_size=h.dist_config['world_size'] * h.num_gpus, rank=rank)
 
     torch.cuda.manual_seed(h.seed)
+    #device = torch.device('cpu')
     device = torch.device('cuda:{:d}'.format(rank))
 
     generator = Generator(h).to(device)
@@ -265,7 +266,7 @@ def main():
     torch.manual_seed(h.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(h.seed)
-        h.num_gpus = 1 #torch.cuda.device_count()
+        h.num_gpus = 2 #torch.cuda.device_count()
         h.batch_size = h.batch_size // h.num_gpus
         print(f'Number of GPUs: {h.num_gpus}')
         print(f'Batch size per GPU : {h.batch_size}')

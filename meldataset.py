@@ -8,8 +8,6 @@ from librosa.util import normalize
 from scipy.io.wavfile import read
 from librosa.filters import mel as librosa_mel_fn
 
-MAX_WAV_VALUE = 32768.0
-
 
 def load_wav(full_path):
     sampling_rate, data = read(full_path)
@@ -45,7 +43,6 @@ def spectral_de_normalize_torch(magnitudes):
 mel_basis = {}
 hann_window = {}
 
-@staticmethod
 def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin, fmax, center=False):
     if torch.min(y) < -1.:
         print('min value is ', torch.min(y))
@@ -82,7 +79,7 @@ def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin,
 #                             for x in fi.read().split('\n') if len(x) > 0]
 #     return training_files, validation_files
 
-@staticmethod
+
 def get_dataset_filelist(a):
     with open(a.input_training_file, 'r', encoding='utf-8') as fi:
         training_files = [os.path.join(a.input_wavs_dir, x.split(',')[0] + '.wav')
@@ -124,7 +121,7 @@ class MelDataset(torch.utils.data.Dataset):
         #print(f'getting FILENAME -> {filename}')
         if self._cache_ref_count == 0:
             audio, sampling_rate = load_wav(filename)
-            audio = audio / MAX_WAV_VALUE
+            audio = audio / 32768.0
             if not self.fine_tuning:
                 audio = normalize(audio) * 0.95
             self.cached_wav = audio
