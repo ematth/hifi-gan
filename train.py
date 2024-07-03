@@ -119,28 +119,35 @@ def train(rank, a, h):
             y = torch.autograd.Variable(y.to(device, non_blocking=True))
             y_mel = torch.autograd.Variable(y_mel.to(device, non_blocking=True))
             y = y.unsqueeze(1)
+            #print(f'{steps}: get variables')
 
             y_g_hat = generator(x)
             y_g_hat_mel = mel_spectrogram(y_g_hat.squeeze(1), h.n_fft, h.num_mels, h.sampling_rate, h.hop_size, h.win_size,
                                           h.fmin, h.fmax_for_loss)
+            #print(f'{steps}: generator')
 
             optim_d.zero_grad()
+            #print(f'{steps}: zero_grad')
 
             # MPD
             y_df_hat_r, y_df_hat_g, _, _ = mpd(y, y_g_hat.detach())
             loss_disc_f, losses_disc_f_r, losses_disc_f_g = discriminator_loss(y_df_hat_r, y_df_hat_g)
+            #print(f'{steps}: MPD')
 
             # MSD
             y_ds_hat_r, y_ds_hat_g, _, _ = msd(y, y_g_hat.detach())
             loss_disc_s, losses_disc_s_r, losses_disc_s_g = discriminator_loss(y_ds_hat_r, y_ds_hat_g)
+            #print(f'{steps}: MSD')
 
             loss_disc_all = loss_disc_s + loss_disc_f
 
             loss_disc_all.backward()
             optim_d.step()
+            #print(f'{steps}: discrim backward and step')
 
             # Generator
             optim_g.zero_grad()
+            #print(f'{steps}: Generator')
 
             # L1 Mel-Spectrogram Loss
             loss_mel = F.l1_loss(y_mel, y_g_hat_mel) * 45
@@ -152,9 +159,11 @@ def train(rank, a, h):
             loss_gen_f, losses_gen_f = generator_loss(y_df_hat_g)
             loss_gen_s, losses_gen_s = generator_loss(y_ds_hat_g)
             loss_gen_all = loss_gen_s + loss_gen_f + loss_fm_s + loss_fm_f + loss_mel
+            #print(f'{steps}: Losses')
 
             loss_gen_all.backward()
             optim_g.step()
+            #print(f'{steps}: generator backward, step')
 
             if rank == 0:
                 # STDOUT logging
@@ -248,7 +257,7 @@ def main():
     parser.add_argument('--checkpoint_path', default='cp_hifigan')
     parser.add_argument('--config', default='config_v3.json')
     parser.add_argument('--training_epochs', default=5000, type=int)
-    parser.add_argument('--stdout_interval', default=5, type=int)
+    parser.add_argument('--stdout_interval', default=1, type=int)
     parser.add_argument('--checkpoint_interval', default=1000, type=int)
     parser.add_argument('--summary_interval', default=100, type=int)
     parser.add_argument('--validation_interval', default=1000, type=int)
@@ -266,7 +275,7 @@ def main():
     torch.manual_seed(h.seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(h.seed)
-        h.num_gpus = 2 #torch.cuda.device_count()
+        h.num_gpus = torch.cuda.device_count()
         h.batch_size = h.batch_size // h.num_gpus
         print(f'Number of GPUs: {h.num_gpus}')
         print(f'Batch size per GPU : {h.batch_size}')
