@@ -1,7 +1,7 @@
 {
     "resblock": "2",
-    "num_gpus": 2,
-    "batch_size": 8,
+    "num_gpus": 4,
+    "batch_size": 16,
     "learning_rate": 0.0002,
     "adam_b1": 0.8,
     "adam_b2": 0.99,
@@ -27,10 +27,10 @@
     "fmax": 5000,
     "fmax_for_loss": null,
 
-    "num_workers": 2,
+    "num_workers": 4,
 
     "dist_config": {
-        "dist_backend": "nccl",
+        "dist_backend": "gloo",
         "dist_url": "tcp://localhost:54321",
         "world_size": 1
     }
