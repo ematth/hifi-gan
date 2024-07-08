@@ -66,7 +66,7 @@ def inference(a):
             write(output_file, h.sampling_rate, audio)
             print(output_file)
 
-            plt.plot(audio)
+            plt.plot(audio[:, 0])
             plt.savefig(f'figures/{filname}_fig.png')
 
 
