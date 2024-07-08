@@ -10,6 +10,7 @@ from env import AttrDict
 from meldataset import mel_spectrogram, load_wav
 from models import Generator
 import numpy as np
+import matplotlib.pyplot as plt
 
 MAX_WAV_VALUE = 32768.0
 h = None
@@ -58,18 +59,15 @@ def inference(a):
 
             audio = y_g_hat.squeeze()
             audio = audio * MAX_WAV_VALUE
-            audio = audio.cpu().numpy().astype(np.int16)
+            audio = audio.cpu().numpy().astype(np.int16).T
             print(audio.shape, audio.dtype)
-            #np.savetxt('output.csv', audio, delimiter=',')
-            
-            #audio = audio.astype('int16')
-            #print('===========')
-            #print(np.savetxt('output.txt', audio.astype('int16')))
-            #print('===========')
 
             output_file = os.path.join(a.output_dir, os.path.splitext(filname)[0] + '_generated.wav')
             write(output_file, h.sampling_rate, audio)
             print(output_file)
+
+            plt.plot(audio)
+            plt.savefig(f'figures/{filname}_fig.png')
 
 
 def main():
