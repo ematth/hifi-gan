@@ -54,20 +54,23 @@ def inference(a):
             wav, sr = load_wav(os.path.join(a.input_wavs_dir, filname))
             wav = wav / MAX_WAV_VALUE
             wav = torch.FloatTensor(wav).to(device)
+            #print(f'wav shape -> {wav.shape}')
             x = get_mel(wav.unsqueeze(0))
             y_g_hat = generator(x)
 
-            audio = y_g_hat.squeeze()
+            audio = y_g_hat.squeeze().T
             audio = audio * MAX_WAV_VALUE
-            audio = audio.cpu().numpy().astype(np.int16).T
-            print(audio.shape, audio.dtype)
+            audio = audio.cpu().numpy().astype(np.int16)
+
+            print(audio.shape, audio.dtype, h.sampling_rate)
+            np.savetxt(f'figures/{filname}_arr.csv', audio.T, fmt="%d", delimiter=',')
+            plt.plot(audio)
+            plt.savefig(f'figures/{filname}_fig.png')
 
             output_file = os.path.join(a.output_dir, os.path.splitext(filname)[0] + '_generated.wav')
             write(output_file, h.sampling_rate, audio)
             print(output_file)
 
-            plt.plot(audio[:, 0])
-            plt.savefig(f'figures/{filname}_fig.png')
 
 
 def main():

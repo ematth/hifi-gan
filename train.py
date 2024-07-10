@@ -236,7 +236,7 @@ def train(rank, a, h):
 
 def main():
     print('Initializing Training Process..')
-    print(f'nccl: {torch.distributed.is_nccl_available()}')
+    #print(f'nccl: {torch.distributed.is_nccl_available()}')
 
     parser = argparse.ArgumentParser()
 
@@ -252,13 +252,12 @@ def main():
     parser.add_argument('--input_mels_dir', default='ft_dataset')
     parser.add_argument('--input_training_file', default='../../../../mnt/data/maestro-v3.0.0/maestro-v3.0.0-train.csv')
     parser.add_argument('--input_validation_file', default='../../../../mnt/data/maestro-v3.0.0/maestro-v3.0.0-validation.csv')
-    #parser.add_argument('--input_validation_file', default='../data_prep/maestro-v3.0.0-validation.csv') # empty CSV
-
-    parser.add_argument('--checkpoint_path', default='cp_hifigan')
+    
+    parser.add_argument('--checkpoint_path', default='cp_hifigan_test')
     parser.add_argument('--config', default='config_v3.json')
     parser.add_argument('--training_epochs', default=5000, type=int)
     parser.add_argument('--stdout_interval', default=1, type=int)
-    parser.add_argument('--checkpoint_interval', default=1000, type=int)
+    parser.add_argument('--checkpoint_interval', default=100, type=int)
     parser.add_argument('--summary_interval', default=100, type=int)
     parser.add_argument('--validation_interval', default=1000, type=int)
     parser.add_argument('--fine_tuning', default=False, type=bool)
