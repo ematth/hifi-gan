@@ -56,10 +56,11 @@ def mel_spectrogram(y, n_fft, num_mels, sampling_rate, hop_size, win_size, fmin,
         hann_window[str(y.device)] = torch.hann_window(win_size).to(y.device)
 
     
-    y = y.squeeze(0).T
+    # y = y.squeeze(0).mT
     y = torch.nn.functional.pad(y, (int((n_fft-hop_size)/2), int((n_fft-hop_size)/2)), mode='reflect')
+    # y = y.reshape((y.shape[-2], y.shape[-1]))
 
-    print(f'y shape -> {y.shape}')
+    #print(f'y shape -> {y.shape}')
 
     spec = torch.view_as_real(torch.stft(y, n_fft, hop_length=hop_size, win_length=win_size, window=hann_window[str(y.device)],
                       center=center, pad_mode='reflect', normalized=False, onesided=True, return_complex=True))
